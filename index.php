@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css" /> 
 	<link rel="stylesheet" href="assets/css/bootstrap-datepicker.css" /> 
 	
-	<link rel="stylesheet" href="styles.css" /> 
+	<link rel="stylesheet" href="assets/css/styles.css" /> 
 	<link rel="shortcut icon" href="imgs/icon.jpg">
 	<link rel="stylesheet" href="assets/fontawesome/css/all.min.css" /> 
 	<script src="assets/js/jquery.min.js"></script>
