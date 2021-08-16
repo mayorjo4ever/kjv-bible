@@ -18,18 +18,27 @@
 		<meta charset="utf-8" />	
 	</head>
 	
+	
 	<body> 
 		
-		<div class="row mb-5">
-				<div class="col-md-12 col-sm-12 offset-0"  style="background-color:#FFF; min-height:700px;  box-shadow:  5px 5px 5px 5px #888888; ">					 
-					<div class="card"> 
-					<div class="card-header mt-5 pt-5">				
+		<div class="row ">
+		
+				<div class="col-md-12 offset-0 col-sm-12"  style="background-color:#FFF; height:auto;">					 
+					<header>
+					<?php require "navbar.php"; ?>
+					</header>
 					
-					 	<?php require "navbar.php"; ?>
-					</div>	
+					<div class="card" style="top:90px;"> 
+					 
 						<div class="card-body ">
 							<div class="row ">    
-								
+							 <div class="col-md-4 offset-6 searching search_result" style="z-index:800;">
+								 <div class="form-group offset-1 ">
+									<ul class="num_list list-inline"></ul>
+								 </div>	
+							   </div> <!-- ./ form-group --> 
+							
+								<!--
 								<div class="col-md-3 col-sm-12 ">
 									<div class="">
 										<div class="col-sm-6 float-left bg-info " style="border-left:1px solid #ddd; border-right:1px solid #ddd; ">
@@ -55,9 +64,9 @@
 										</div> 
 									</div>  
 									 
-								</div>
+								</div> -->
 								
-								<div class="col-md-9 col-sm-12 verse"  style="border-left:15px solid #eeefff; border-top:15px solid #eeefff;">
+								<div class="col-md-12 offset-0 col-sm-12 verse"  style="border:15px solid #eeefff; ">
 									<form action="index.php" action="GET">
 											<!-- <select name="v" selected="selected" value="<?php echo $version ?>">
 												<?php 
@@ -87,7 +96,10 @@
 											<input type="hidden" id="vid3" value="" style="width:100px;" />
 										</form>
 										 
-										<div class="verse_ref m-2 p-2" style=" height:550px;  overflow:scroll;"></div>
+										<div class="m-2 p-2" style=" height:400px; ">
+										  <div class="verse_ref"></div>
+										  
+										</div>
 										
 									<?php 
 										//return results
@@ -129,22 +141,21 @@
 						</div>
 						
 					</div>
-	
-		 
 		
 			</div> <!-- ./ col-md-6-->
 			</div> <!-- ./ row -->
 			
 	</body>
-	<footer class="footer bg-dark">
-		
-	  <div class="row">
-		<div class="col-md-8 offset-2 mt-3 mb-3 pt-3 pb-3">
+	
+	<!-- 
+	<footer class="footer bg-dark" style="position:absolute; bottom:30px; left:0px; ">
+		 
+		<div class="mt-2 mb-5 pt-3 pb-5" style="width:100%; text-align:center">
 		<span class="text-white d-block text-center text-sm-left d-sm-inline-block font-16"> Copyright © 2021 &nbsp;    End-Time Message Believers Ministry, Ilorin Church, Kwara State
 		  <a href="https://facebook.com/mayorjo4ever" target="_blank"> : mayorjo4ever </a>. All rights reserved. </span>						 
 		</span>
-	  </div> </div> 
-	</footer>
+	  </div>  
+	</footer> -->
 	
 	<?php require "modal.php"; ?>
 	

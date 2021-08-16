@@ -40,19 +40,36 @@
 		 $stmt->close();
 		 
 	}
-
+	
+	function getLastVerse($book_id = NULL,$chapter = NULL, $database = NULL){
+		if (!$database) { die('You forgot to specify the database in your bible_to_sql call.'); }
+		
+		$query = "SELECT DISTINCT MAX(v) as last from bible.t_kjv WHERE b = $book_id AND c = $chapter  ";
+		$stmt = $database->stmt_init();
+		$stmt->prepare($query);
+		$stmt->execute();
+		$result = $stmt->get_result();
+		if ($row = $result->fetch_array(MYSQLI_NUM)) {
+			return $row[0];
+		}
+		 $stmt->close(); 		
+	} 
+	 
 	//JOSHUA 1:8-10 to 0601008-0601010
 
 	//return book number
 	class bible_to_sql {
-		
+		## public $textToRead = null; 
 		protected $book = null;
 		protected $bookName = null;
 		protected $chapter = null;
 		protected $chapterHuman = null;
 		protected $verse = "001";
 		protected $endverse = "999";
-		protected $range = FALSE;
+		protected $firstId = null; 
+		protected $lastVerse = "001"; 
+		protected $range = FALSE; 
+		
 		
 		public function __construct($string = NULL, $range = FALSE, $database = NULL) {
 			
@@ -69,6 +86,7 @@
 			$separatedVerse = explode(":",$separatedArray[1]);
 			$this->chapterHuman = $separatedVerse[0];
 			$this->chapter = $this->addZeros($separatedVerse[0],3);
+			
 			
 			//determine if single or range
 			if (strpos($separatedArray[1], '-') !== FALSE) {
@@ -94,6 +112,10 @@
 				$this->verse = $this->addZeros($separatedVerse[1], 3);
 			}
 			
+			$this->firstId = $this->book.$this->chapter.$this->verse."";			
+			$this->lastVerse = getLastVerse($this->book, $this->chapter, $database);
+			
+			 
 		}
 			
 		public function addZeros($input,$max) {
@@ -114,7 +136,11 @@
 				return "id='".$this->book.$this->chapter.$this->verse."'";
 			}
 		}
-			
+		
+		public function getBookId() {
+			return $this->book;
+		}
+		
 		public function getBook() {
 			return $this->bookName;
 		}
@@ -134,5 +160,12 @@
 		public function getRange() {
 			return $this->range;
 		}
+	 	public function getFirstId() {
+			return $this->firstId;
+		}
 		
+		public function getLastVerse() {
+			return $this->lastVerse;
+		}
 	}
+	

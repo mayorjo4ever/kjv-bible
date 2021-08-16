@@ -6,21 +6,39 @@ $(function(){
 				 $(this).css('font-weight','bold');
 			 });
 			  
-			 
+			  $('input.text-search').on('keyup',function(){
+				search_text = $(this).val();  elem = $('.search_result'); 
+				displayer = $('.num_list');  
+				if(search_text.length >=1) {  $.ajax({	url: 'ajax.php', type: 'POST',
+						data: {auto_search_bible_reference:"",keyword:search_text},			
+						cache: false,
+						beforeSend : function (){  console.log(' ffff '); }, 
+						success:function(data){ 	displayer.show(); displayer.html(data); }
+					}); 
+					}
+					else {
+					displayer.hide(); 
+				}
+			});  
+			/*****************/
+						 
 			 $('input.text-search').keypress(function (e) {
 				 var key = e.which;
 				 if(key == 13)  // the enter key code
 				  {
 					e.preventDefault(); elem = 'div.verse_ref'; texts = $(this).val(); 
+					v = $('select#v').val(); 
 					if(texts == ""){ alert('No Scripture To Read'); }
-					else {readBookbySearch(texts,elem); }					
+					else {readBookbySearch(texts,elem,v); }					
 				  }
 				}); 
+				
 				/***************************/
 				$('button.read-book').on('click',function(e){
 					e.preventDefault(); elem = 'div.verse_ref'; texts = $('input.text-search').val();
+					v = $('select#v').val();
 					if(texts == ""){ alert('No Scripture To Read ' ); }
-					else {readBookbySearch(texts,elem); }	
+					else {readBookbySearch(texts,elem,v); }	
 				});
 				/***************************/
 				$('button.search-book').on('click',function(e){
@@ -40,6 +58,26 @@ $(function(){
 				/***************************/
 				count_total_messages('span.total_notes');
 				/***************************/
+				
+				/***** DETECT NEXT & PREVIOUS KEY STROKE *****************/
+				/********
+				$("body div.card div.row").on("mouseover",function () {
+				  $(document).bind("keydown",function(e){
+					  var key = e.keyCode || e.which; 
+					  console.log("key code : "+key);  
+					  // 37 = left arrow  , 38 = up arrow,  39 = right arrow,   40 = down arrow
+					  if(key == 37 || key == 38){
+						  $("button#pressPrev").click(); 
+					  }
+					  if(key == 39 || key == 40){
+						  $("button#pressNext").click(); 
+					  }
+				  });
+				}).on("mouseout",function(){
+					$(document).unbind("keydown");
+				});
+				**************/
+				
 		}); // end jQuery 
 		
 		
@@ -134,17 +172,17 @@ $(function(){
 			conT.animate({ scrollTop:scT.offset().top - conT.offset().top + conT.scrollTop(),scrollLeft:0},0); 		
 		}
 		/********************************/
-		function readBookbySearch(texts,elem){ 
+		function readBookbySearch(texts,elem,v = "t_kjv"){ 
 			$.ajax({
-					url: "ajax.php", type: "POST",	data: { read_text_verse:"all", book:texts  },								
+					url: "ajax.php", type: "POST",	data: { read_text_verse:"all", book:texts ,v:v },								
 					cache: false, beforeSend : function (){  console.log(texts); }, 
 					success: function(response) { $(elem).html(response);	}	 
 				});  
 			}
 		/********************************/
-		function searchBibleWords(texts,elem){ 
+		function searchBibleWords(texts,elem,v = "t_kjv"){ 
 			$.ajax({
-					url: "ajax.php", type: "POST",	data: { search_bible_words:"all", texts:texts  },							
+					url: "ajax.php", type: "POST",	data: { search_bible_words:"all", texts:texts,v:v  },							
 					cache: false, beforeSend : function (){ $(elem).html('Searching, Plese Wait...'); }, 
 					success: function(response) { $(elem).html(response);	}	 
 				});  
@@ -224,3 +262,53 @@ $(function(){
 			}
 		
 		
+		function nextId(curId,maxId){
+			curId = parseInt(curId); 
+			maxId = parseInt(maxId); 
+			
+			if( curId < maxId ) {
+				return curId+=1; 
+			}
+			else return maxId; 
+			
+		}
+		
+		function prevId(curId,minId){
+			curId = parseInt(curId); 
+			minId = parseInt(minId); 
+			
+			if( minId < curId ) {
+				return curId-=1;  
+			}
+			return minId; 
+		}
+		
+		function setPrevId(curId,minId){
+			newId = prevId(curId,minId);
+			elem = $('input.text-search');  btn = $('button.read-book');
+			script = elem.val().split(":") ; 
+			newVerse = script[0]+":"+newId;
+			elem.val(newVerse);  btn.click(); 
+		}
+		
+		function setNextId(curId,maxId){
+			newId = nextId(curId,maxId);
+			elem = $('input.text-search');  btn = $('button.read-book');
+			script = elem.val().split(":") ; 
+			newVerse = script[0]+":"+newId;
+			elem.val(newVerse);  btn.click(); 
+			// console.log(' new id : '+newId+' prev id: '+curVerse);
+		}
+		
+		 function set_bible_found(name,id) {
+			// change input value
+			$('input.text-search').val(name);
+			 $('input.text-search').focus(); 				
+			$('.num_list').hide(); elem = $('.disp_content');
+		 }
+			 
+		function reset_verse(book, chapter){ btn = $('button.read-book');
+			$('input.text-search').val(book+" "+chapter);
+			btn.click(); 
+		}
+	///////////////////////

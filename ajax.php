@@ -174,27 +174,35 @@
 		//split at commas
 		$refText = empty($_POST['book'])?$default_text:$_POST['book']; 
 		$version = empty($_POST['v'])?$default_version:$_POST['v'];		
-		$references = explode(",",$refText);
+		$references = explode(",",$refText); 
 		 
 		#  echo $refText; 
 		## search where the scripture is 
 		foreach ($references as $r) {
 													
 				$ret = new bible_to_sql($r, NULL, $mysqli);
-				//echo "sql query: " . $ret->sql() . "<br />";
-				//SELECT * FROM bible.t_kjv WHERE id BETWEEN 01001001 AND 02001005
-				$sqlquery = "SELECT * FROM " . $version . " WHERE " . $ret->sql();
+				// print "sql query: " . $ret->sql() . "<br />";
+				// print_r($ret); 
+				$book_id = $ret->getBookId();
+				$curVerse = $ret->getVerse();
+				$lastVerse = $ret->getLastVerse();
+				$firstId = $ret->getFirstId(); 
+				$curChapter = $ret->getChapter();
+			  				
+				 //echo "sql query: " . $ret->sql() . "<br />";
+				 
+				$sqlquery = "SELECT * FROM " . $version . " WHERE id = $firstId "; // . $ret->sql();
 				$stmt = $mysqli->prepare($sqlquery);
 				$stmt->execute();
-				$result = $stmt->get_result();
+				$result = $stmt->get_result();  
 				if ($result->num_rows > 0) {
 					//$row = $result->fetch_array(MYSQLI_NUM);
 					//0: ID 1: Book# 2:Chapter 3:Verse 4:Text
 					
 					  print "<article><header><strong>{$ret->getBook()} {$ret->getChapter()}</strong></header>";
 					
-					while ($row = $result->fetch_row()) { # print "<div class=\"versenum\">${row[3]}</div>";
-					 print " <div class=\"versetext\">${row[3]}. ${row[4]} $default_text</div><br />";
+					while ($row = $result->fetch_row()) { 
+					 print " <div class=\"versetext\">${row[3]}. ${row[4]} </div><br />";
 					}
 					print "</article>";
 					
@@ -205,6 +213,60 @@
 			}
 			$mysqli->close(); 
 		## end search 		 
+		 
+		?>
+			
+			<p>&nbsp; </p>
+			
+		<div class="col-md-12 offset-0" id="">
+			
+			<div class="float-left " style="position:relative; left:1%; ">
+				<select class="btn btn-light btn-lg versions" id="v" onchange="$('button.read-book').click()">
+				<?php $versions = $dbm->select('bible_version_key',array('')); 
+				if(!empty($versions))foreach($versions as $k=>$v){ 
+					$type =  $versions[$k]['table']; 	?>			
+					<option value="<?php echo $type;?>" <?php echo ($type == $version)?"selected":""; ?>>  <?php echo $versions[$k]['version'];?> </option>
+				<?php } ?>
+				</select> 
+			</div>
+			
+			<div class="float-left " style="position:relative; left:5%; ">
+				<select class="btn btn-light btn-lg books" onchange="reset_verse($(this).val(),$('select.chapters').val())">
+				<?php $books = $dbm->select('key_english',array('')); 
+				if(!empty($books))foreach($books as $k=>$v){ 
+					$id =  $books[$k]['b']; $id = addZeros($id,2);	?>			
+					<option value="<?php echo $books[$k]['n'];?>" <?php echo ($id == $book_id)?"selected":""; ?>>  <?php echo $books[$k]['n'];?> </option>
+				<?php } ?>
+				</select> 
+			</div>
+			
+			<div class="float-left " style="position:relative; left:10%; ">
+				<select class="btn btn-light btn-lg chapters" onchange="reset_verse($('select.books').val(),$(this).val())">
+				<?php $chapters = $mydbm->runBaseQuery("SELECT DISTINCT MAX(c) as last from t_kjv WHERE b = $book_id ");
+				$len = range(1,$chapters[0]['last']); foreach($len as $ch) {
+					?>			
+					<option value="<?php echo $ch;?>" <?php echo ($ch==$curChapter)?"selected":""; ?>>  <?php echo $ch;?> </option>
+				<?php } ?>
+				</select> 
+			</div>
+			
+			
+			<div class="float-left " style="position:relative; left:15%; ">
+			<span class="btn btn-dark btn-lg pull-right"> <?php echo intval($curVerse) . " of ". intval($lastVerse);; ?>  </span> 
+			</div>
+			
+			
+			<div class="float-left  mb-2 pb-2" style="position:relative; left:20%; ">
+				<button id="pressPrev" class="btn btn-primary btn-lg prev-verse"  onclick="setPrevId($(this).attr('data-text'),$(this).attr('min'))" data-text="<?php echo intval($curVerse);?>" min="1" ><i class="fa fa-chevron-left"></i>&nbsp; Previous </button> 
+			</div>
+			
+			<div class="float-left  mb-2 pb-2" style="position:relative; left:25%; " >
+				<button id="pressNext" class="btn btn-success btn-lg pull-right next-verse" onclick="setNextId($(this).attr('data-text'),$(this).attr('max'))" data-text="<?php echo intval($curVerse);?>" max="<?php echo intval($lastVerse);?>" >Next &nbsp; <i class="fa fa-chevron-right"></i> </button> 
+			</div>
+			
+			
+		 </div>
+		<?php
 	 }
 	  
 	 // search_bible_words :"all", texts:texts
@@ -253,6 +315,31 @@
 		## end search 		 
 	 }
 	 
+	 
+	 if(isset($_POST['auto_search_bible_reference'])){ $dbm = new DbTool(); 
+		$word = $dbm->clean($_POST["keyword"]); 
+		if(!empty($word)) { 
+			$info = $dbm->regExpSearch('key_english', array('n'=>$word),array('n'), " ASC ",'10');
+			if(!is_null($info)) $info = $dbm->getFields($info,array('n','b')); 
+			$tot = empty($info)?0:count($info['n']);
+			 if(!is_null($info)){
+			   $l=0; $m=0;
+				  foreach($info['n'] as $ref) {
+				## for($p = 1;$p<=10; $p++) {
+					  $names = str_replace($word, "<b class='text-purple'>".$word."</b>", $ref);
+				 ?>
+				<li onclick="set_bible_found('<?php echo $ref." "; ?>','<?php echo $info['b'][$m]; ?>');">  <?php echo $names; ?></li>
+				<?php 
+					if($l>20) break; 
+				  $l++; $m++;
+			    	}
+				} ## end not null 	
+				else {
+					echo "";
+				}
+			 }  // end not empty keyword 
+		} ### end post 
+	  
 	 
 	
 	function addZeros($input,$max) {

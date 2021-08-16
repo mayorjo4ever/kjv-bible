@@ -1,8 +1,12 @@
  /*** body {font-size:24px; }  ***/
+		  
+		  #verse_foot{
+			  bottom:0em; background-color:#000; height:50px; width:100%;  position:block; 
+		  }
 		 .verse {font-size:28px; }
 		 .bold, p.bold {font-weight:bold; }
-		
-		/*** styling the ul > li for bible references ***/
+		 .versetext { font-size:2em; text-decoration: text-center; font-family:tahoma; }
+		  /*** styling the ul > li for bible references ***/
 			.book_ref ul > li ,
 			.chp_ref ul > li,
 			.vs_ref ul >  li{ text-align:center; }
