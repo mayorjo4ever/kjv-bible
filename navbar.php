@@ -13,7 +13,7 @@
 		<form class="form-inline ml-auto">
 			 		
 				<button title="Save The Bible Reference To Message Note" type="button" onclick="save_bible_passage()" class="btn btn-icons btn-dark "><i class="fa fa-save"></i></button>&nbsp;
-				<input type="text" value="Mal 4:5" class="form-control text-search mr-sm-2" style="font-size:24px;" placeholder="Read / Search Bible ">
+				<input type="text" value="Rev 3:14-21" class="form-control text-search mr-sm-2" style="font-size:24px;" placeholder="Read / Search Bible ">
 				   
 				<button type="submit" class="btn btn-warning read-book btn-lg "> Read &nbsp;<i class="fa fa-book"></i></button> &nbsp; 
 				<button type="submit" class="btn btn-dark search-book btn-lg "> Search &nbsp;<i class="fa fa-search"></i></button>

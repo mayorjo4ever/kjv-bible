@@ -14,6 +14,7 @@
 	<link rel="shortcut icon" href="imgs/icon.jpg">
 	<link rel="stylesheet" href="assets/fontawesome/css/all.min.css" /> 
 	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<title>Bible Search</title>
 		<meta charset="utf-8" />	
 	</head>
@@ -66,75 +67,18 @@
 									 
 								</div> -->
 								
+								
+								
 								<div class="col-md-12 offset-0 col-sm-12 verse"  style="border:15px solid #eeefff; ">
-									<form action="index.php" action="GET">
-											<!-- <select name="v" selected="selected" value="<?php echo $version ?>">
-												<?php 
-													// Get the list of bible versions
-													$stmt = $mysqli->prepare("SELECT `table`, version FROM bible_version_key");
-													$stmt->execute();
-													$result = $stmt->get_result();
-
-													while ($row = $result->fetch_row()) {
-														echo "<option value=\"$row[0]\"";
-														// Make dropdown list select the currently selected version
-														if ($row[0] === $version) {
-															echo " selected=\"selected\"";
-														}
-
-														echo ">$row[1]</option>";
-														// print_r($row);
-													}
-												?>
-											</select>
-
-											<label for="b">Reference(s): </label>
-											<input type="text" name="b" value="<?php echo $refText; ?>" /><input type="submit" value="Search" /><br />
-											-->
-											<input type="hidden" id="vid1" value="" style="width:100px;" />
-											<input type="hidden" id="vid2" value="" style="width:100px;" />
-											<input type="hidden" id="vid3" value="" style="width:100px;" />
-										</form>
-										 
-										<div class="m-2 p-2" style=" height:400px; ">
+									 	
+										<div class="m-2 p-2" style=" height:540px; ">
+										<div class="font_slide col-md-3 float-right">
+											  <div id="custom-handle" class="ui-slider-handle"></div>
+										</div>
 										  <div class="verse_ref"></div>
 										  
 										</div>
-										
-									<?php 
-										//return results
-										# addZeros(2,2);
-										
-										# print_r($_SESSION['passages']); 
-										
-										/***
-										foreach ($references as $r) {
-													
-											$ret = new bible_to_sql($r, NULL, $mysqli);
-											//echo "sql query: " . $ret->sql() . "<br />";
-											//SELECT * FROM bible.t_kjv WHERE id BETWEEN 01001001 AND 02001005
-											$sqlquery = "SELECT * FROM " . $version . " WHERE " . $ret->sql();
-											$stmt = $mysqli->prepare($sqlquery);
-											$stmt->execute();
-											$result = $stmt->get_result();
-											if ($result->num_rows > 0) {
-												//$row = $result->fetch_array(MYSQLI_NUM);
-												//0: ID 1: Book# 2:Chapter 3:Verse 4:Text
-												
-												  print "<article><header><strong>{$ret->getBook()} {$ret->getChapter()}</strong></header>";
-												
-												while ($row = $result->fetch_row()) { # print "<div class=\"versenum\">${row[3]}</div>";
-												 print " <div class=\"versetext\">${row[3]}. ${row[4]} $default_text</div><br />";
-												}
-												print "</article>";
-												
-											} else {
-												print "Did not understand your input.";
-											}
-											$stmt->close();
-										}
-										$mysqli->close(); ***/
-									?>
+									
 								</div>
 
 								</div><!-- ./ row  -->
@@ -164,5 +108,6 @@
 	<script src="assets/js/script.js"></script>
 	<script src="assets/fontawesome/js/all.min.js"></script>
 	<link rel="stylesheet" href="assets/fontawesome/css/all.min.css" /> 
+	<link rel="stylesheet" href="assets/jquery-ui-1.12.1/jquery-ui.min.css" /> 
 	
 </html>

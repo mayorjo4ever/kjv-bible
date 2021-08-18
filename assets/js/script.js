@@ -58,7 +58,15 @@ $(function(){
 				/***************************/
 				count_total_messages('span.total_notes');
 				/***************************/
-				
+				     
+				// manage font-size of bible verses 
+				 var handle = $( "#custom-handle" );
+				$('div.font_slide').slider({min:16, value:24, max:36,  orientation: "horizontal",					
+					create: function() { handle.text( $( this ).slider( "value" ) );  },
+					slide: function( event, ui ) { handle.text( ui.value );  $('div.verse_ref').css("font-size",ui.value+"px");  }
+					});  // end slider 
+			    $('div.verse_ref').css("font-size",$('div.font_slide').slider("option","value")+"px"); 
+ 
 				/***** DETECT NEXT & PREVIOUS KEY STROKE *****************/
 				/********
 				$("body div.card div.row").on("mouseover",function () {

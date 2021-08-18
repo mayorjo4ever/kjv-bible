@@ -360,7 +360,7 @@
 		
 	}
 	function highlight($astring,$aword){		
-		return preg_replace('@\b('.$aword.')\b@si','<strong style="background-color:yellow">$1</strong>',$astring);
+		return preg_replace('@\b('.$aword.')\b@si','<strong style="color:orange">$1</strong>',$astring);
 	}
 	
 ?>

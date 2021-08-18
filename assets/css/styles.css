@@ -1,5 +1,14 @@
  /*** body {font-size:24px; }  ***/
 		  
+		    #custom-handle {
+				width: 2em;
+				height: 1.6em;
+				top: 50%;
+				margin-top: -.8em;
+				text-align: center;
+				line-height: 1.6em;
+			 }
+		  
 		  #verse_foot{
 			  bottom:0em; background-color:#000; height:50px; width:100%;  position:block; 
 		  }
