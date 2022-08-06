@@ -121,7 +121,8 @@
 				case ($counts <= 35 ) : { $font = 70; } break;				 
 				case ($counts <= 40 ) : { $font = 65; } break;				 
 				case ($counts <= 45 ) : { $font = 60; } break;				 
-				case ($counts <= 50 ) : { $font = 55; } break;				 
+				case ($counts <= 50 ) : { $font = 55; } break;	
+				case default : { $font = 60; } break;					
 			}
 			return $font;
 		}
