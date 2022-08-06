@@ -1,0 +1,105 @@
+ /*** body {font-size:24px; }  ***/
+		  
+		    #custom-handle {
+				width: 2em;
+				height: 1.6em;
+				top: 50%;
+				margin-top: -.8em;
+				text-align: center;
+				line-height: 1.6em;
+			 }
+		  
+		  #verse_foot {
+			  bottom:0em; background-color:#000; height:50px; width:100%;  position:block; 
+		  }
+		 
+		 .bold, p.bold {font-weight:bold; }
+		 .versetext {  font-weight:bold; text-align: center; font-family:tahoma; }
+		 .tosize-50 {font-size:50px; }
+		 .tosize-60 {font-size:60px; }
+		 .tosize-70 {font-size:70px; }
+		 .tosize-75 {font-size:75px; }
+		 .tosize-80 {font-size:80px; }
+		 .tosize-90 {font-size:90px; }
+		 .tosize-100 {font-size:100px; }
+		 .tosize-105 {font-size:105px; }
+		 .tosize-110 {font-size:110px; }
+		 /*.versetext { font-size:6vw; font-weight:bold; text-align: center; font-family:tahoma; }*/
+		  /*** styling the ul > li for bible references ***/
+			.book_ref ul > li ,
+			.chp_ref ul > li,
+			.vs_ref ul >  li{ text-align:center; }
+			
+			.book_ref  li:hover, .chp_ref  li:hover, .vs_ref  li:hover {
+				  background: #ccc000; color:#fff;
+			}
+			.book_ref li.active, .chp_ref li.active, .vs_ref li.active {
+				  background: #333366; color:#fff; 
+				  font-weight:bold; border-radius:10px;
+			}
+			.pointer { cursor:pointer; }
+			/** css switch style sheet **/
+			/* The switch - the box around the slider */
+				.switch {
+				  position: relative;
+				  display: inline-block;
+				  width: 60px;
+				  height: 34px;
+				}
+
+				/* Hide default HTML checkbox */
+				.switch input {
+				  opacity: 0;
+				  width: 0;
+				  height: 0;
+				}
+
+				/* The slider */
+				.slider {
+				  position: absolute;
+				  cursor: pointer;
+				  top: 0;
+				  left: 0;
+				  right: 0;
+				  bottom: 0;
+				  background-color: #dcdcdc;
+				  -webkit-transition: .4s;
+				  transition: .4s;
+				}
+
+				.slider:before {
+				  position: absolute;
+				  content: "";
+				  height: 26px;
+				  width: 26px;
+				  left: 4px;
+				  bottom: 4px;
+				  background-color: white;
+				  -webkit-transition: .4s;
+				  transition: .4s;
+				}
+
+				input:checked + .slider {
+				  background-color:  #000000;  /* #50c378; */
+				}
+
+				input:focus + .slider {
+				  box-shadow: 0 0 1px #000000;  /* #50c378; */
+				}
+
+				input:checked + .slider:before {
+				  -webkit-transform: translateX(26px);
+				  -ms-transform: translateX(26px);
+				  transform: translateX(26px);
+				}
+
+				/* Rounded sliders */
+				.slider.round {
+				  border-radius: 34px;
+				}
+
+				.slider.round:before {
+				  border-radius: 50%;
+				}
+
+			/** end switch style **/ 

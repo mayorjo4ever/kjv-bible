@@ -15,21 +15,23 @@
 	<link rel="stylesheet" href="assets/fontawesome/css/all.min.css" /> 
 	<script src="assets/js/jquery.min.js"></script>
 	<script src="assets/jquery-ui-1.12.1/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="assets/alertifyjs/css/alertify.min.css">	
+	<link rel="stylesheet" href="assets/alertifyjs/css/themes/bootstrap.min.css">
+	<link rel="stylesheet" href="assets/summernote/summernote-lite.min.css">
 	<title>Bible Search</title>
 		<meta charset="utf-8" />	
 	</head>
-	
-	
-	<body> 
+		
+	<body style="max-height:600px;"> 
 		
 		<div class="row ">
 		
-				<div class="col-md-12 offset-0 col-sm-12"  style="background-color:#FFF; height:auto;">					 
+				<div class="col-md-12 offset-0 col-sm-12"  style="background-color:#000; height:auto;">					 
 					<header>
 					<?php require "navbar.php"; ?>
 					</header>
 					
-					<div class="card" style="top:90px;"> 
+					<div class="card" style="top: 90px; border-bottom:0 solid #fff; "> 
 					 
 						<div class="card-body ">
 							<div class="row ">    
@@ -38,55 +40,24 @@
 									<ul class="num_list list-inline"></ul>
 								 </div>	
 							   </div> <!-- ./ form-group --> 
-							
-								<!--
-								<div class="col-md-3 col-sm-12 ">
-									<div class="">
-										<div class="col-sm-6 float-left bg-info " style="border-left:1px solid #ddd; border-right:1px solid #ddd; ">
-											<label class="bold text-white ">BOOK </label>
-										 </div>
-										<div class="col-sm-3 float-left bg-info"  style="border-left:1px solid #ddd; border-right:1px solid #ddd; ">
-											<label class="bold text-white">CHP.. </label> 
-										</div>
-										<div class="col-sm-3 float-left bg-info" style="border-left:1px solid #ddd; border-right:1px solid #ddd;">
-											<label class="bold text-white">VERSE </label> 
-										</div> 
-									</div> 
-									
-									<div class="">
-										<div class="col-sm-6 float-left section  pt-2 pb-2" style="border-left:1px solid #ddd; border-right:1px solid #ddd; height:450px; overflow:scroll;">											 
-											<div class="book_ref "></div>
-										</div>
-										<div class="col-sm-3 float-left section pt-2 pb-2"  style="border-left:1px solid #ddd; border-right:1px solid #ddd; height:450px;  overflow:scroll; ">
-										 <div class="chp_ref "></div>
-										</div>
-										<div class="col-sm-3 float-left section pt-2 pb-2" style="border-left:1px solid #ddd; border-right:1px solid #ddd;  height:450px;  overflow:scroll;">
-											 <div class="vs_ref"></div>
-										</div> 
-									</div>  
-									 
-								</div> -->
 								
-								
-								
-								<div class="col-md-12 offset-0 col-sm-12 verse"  style="border:15px solid #eeefff; ">
+								<div class="col-md-12 offset-0 col-sm-12 mb-0 pb-0" >
 									 	
-										<div class="m-2 p-2" style=" height:540px; ">
-										<div class="font_slide col-md-3 float-right">
-											  <div id="custom-handle" class="ui-slider-handle"></div>
+										<div class="papa" style=" min-height:500px; height:auto; background:#; text-color:#000;  ">
+										
+										  <div class="verse_ref" ></div>
+										 
 										</div>
-										  <div class="verse_ref"></div>
-										  
-										</div>
-									
-								</div>
+										
+									</div> <!-- ./ ./ col-md-12  -->
 
 								</div><!-- ./ row  -->
-						</div>
-						
-					</div>
+								
+								
+						</div> <!-- ./ card-body  -->						
+					</div>  <!-- ./ card  -->
 		
-			</div> <!-- ./ col-md-6-->
+			</div> <!-- ./ col-md-12-->
 			</div> <!-- ./ row -->
 			
 	</body>
@@ -106,8 +77,13 @@
 	<script src="assets/js/bootstrap.bundle.min.js"></script>
 	<script src="assets/js/bootstrap-datepicker.js"></script>
 	<script src="assets/js/script.js"></script>
+	<script src="assets/js/jquery.fittext.js"></script>
 	<script src="assets/fontawesome/js/all.min.js"></script>
 	<link rel="stylesheet" href="assets/fontawesome/css/all.min.css" /> 
 	<link rel="stylesheet" href="assets/jquery-ui-1.12.1/jquery-ui.min.css" /> 
+	<script src="assets/alertifyjs/alertify.min.js"></script>
+	<script src="assets/js/textToSpeech.js"></script>
+	<script src="assets/summernote/summernote-lite.min.js"></script>
+	
 	
 </html>

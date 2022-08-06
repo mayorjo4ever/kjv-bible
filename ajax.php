@@ -1,16 +1,30 @@
-<?php error_reporting(0); require "connector.php";	require "bible_to_sql.php"; @session_start(); 	
-	
+<?php error_reporting(0); require "connector.php";	require "bible_to_sql.php"; @session_start();	
+	$glob_time = date('H:i:s',time()-3600);
 	if(isset($_POST['save_bible_passage'])) {
 		 $passage = $dbm->clean($_POST['passage']);		 
 		 if(!isset($_SESSION['passages'])) $_SESSION['passages'] = array(); 
 		 if(!in_array($passage,$_SESSION['passages'])) array_push($_SESSION['passages'],$passage);
-		 echo "Bible Verse Saved Successfully";
+		 #save to database
+		 $psg = $_SESSION['passages']; 	 $psg = empty($psg)?"":implode("**",$psg);
+		 
+		 $data = array('bible_ref'=>$psg);
+		 $table = "messages";
+		 $exists = $dbm->select($table,array('finalized'=>'no')); 
+		 if(empty($exists)){
+			 $dbm->insert($table,$data); 
+			 echo "Note Successfully saved ";
+		 }
+		 else {
+			 $dbm->updateTb($table,$data,array('finalized'=>'no')); 
+			 echo "Note Successfully Updated ";
+		 } 
+		  
 	}
 	/*********************************/
 	if(isset($_POST['get_bible_passage'])) {
-		if(isset($_SESSION['passages']))  {
+		if(isset($_SESSION['passages']))  {			
 			$passages = array_map(function($text){
-				return $text = "<li>".ucwords($text)."</li>";  
+				if($text!="") return $text = "<li>".ucwords($text)."</li>";  
 			},$_SESSION['passages']);
 			echo "<ol style='line-height:2em;'>";
 			foreach($passages as $text){
@@ -20,6 +34,15 @@
 			echo "<span onclick='delete_bible_ref()' class='pointer text-danger' > &nbsp; &nbsp; &nbsp; Delete All &nbsp; &nbsp; <i class='fa fa-trash'> </i>  </span>"; 
 		}  
 		else echo "<ul><li class='text-danger'><span> No Saved Bible References  </span></li></ul>"; 
+	}
+	
+	/*********************************/
+	if(isset($_POST['reload_saved_notes'])) {
+		  $cur_note = $dbm->select('messages',array('finalized'=>'no','status'=>'active'));
+		  if(!empty($cur_note)) $cur_note = $dbm->getFields($cur_note,$mydal->tableFields('messages')); 
+		   if(!empty($cur_note)) $_SESSION['passages'] = explode('**',$cur_note['bible_ref'][0]);
+		   
+		 echo json_encode($cur_note); 
 	}
 	/*********************************/
 	if(isset($_POST['delete_bible_passage'])) {
@@ -37,7 +60,7 @@
 		
 		 $keys = array('date_c','messages','preacher','topic','note_title');
 		 $data = array_combine($keys,$variables); 
-		 $data = array_merge($data,array('bible_ref'=>$passages));
+		 $data = array_merge($data,array('bible_ref'=>$passages,'time_c'=>$glob_time));
 		 $table = "messages";
 		 $exists = $dbm->select($table,array('finalized'=>'no')); 
 		 if(empty($exists)){
@@ -82,7 +105,27 @@
 	}
 	
 	
-	
+	function wordcount($text){
+		return $counts = count(explode(" ",$text));
+	}
+	function resize($text){
+		$counts = count(explode(" ",$text));
+		$font = 80;
+			switch($counts){
+				case ($counts <= 10 ) : { $font = 110; } break;
+				case ($counts <= 15 ) : { $font = 105; } break;
+				#case ($counts <= 20 ) : { $font = 100; } break;
+				case ($counts <= 20 ) : { $font = 90; } break;
+				case ($counts <= 25 ) : { $font = 80; } break;
+				case ($counts <= 30 ) : { $font = 75; } break;
+				case ($counts <= 35 ) : { $font = 70; } break;				 
+				case ($counts <= 40 ) : { $font = 65; } break;				 
+				case ($counts <= 45 ) : { $font = 60; } break;				 
+				case ($counts <= 50 ) : { $font = 55; } break;				 
+			}
+			return $font;
+		}
+		
 	
 	if(isset($_POST['load_books'])) {
 		 $books = $dbm->select('key_english',array(''));
@@ -120,7 +163,7 @@
 		 $len = range(1,$verses[0]['last']); foreach($len as $vs) {
 		 // $id =  $books[$k]['b'];
 		 ?>
-			<li onclick="set_active_list('div.vs_ref',this), setIds('<?php echo addZeros($vs,3); ?>','#vid3'), show_verse('.verse_ref')" class="pl-l"><?php echo $vs; ?></li>
+			<li onclick="set_active_list('div.vs_ref',this), setIds('<?php echo addZeros($vs,3); ?>','#vid3'), show_verse('.verse_ref')" class="pl-1"><?php echo $vs; ?></li>
 			  <?php  
 		 }
 		 echo "</ul>"; 		 
@@ -199,12 +242,13 @@
 					//$row = $result->fetch_array(MYSQLI_NUM);
 					//0: ID 1: Book# 2:Chapter 3:Verse 4:Text
 					
-					  print "<article><header><strong>{$ret->getBook()} {$ret->getChapter()}</strong></header>";
+					//print "<article><header><strong>{$ret->getBook()} {$ret->getChapter()} ${row[3]}</strong></header>";
 					
 					while ($row = $result->fetch_row()) { 
-					 print " <div class=\"versetext\">${row[3]}. ${row[4]} </div><br />";
+						$size = resize($row[4]);  $wc = wordcount($row[4]);
+					 print " <div class=\"versetext tosize-$size\">${row[4]} </div> "; #<small> $wc = $size</small>
 					}
-					print "</article>";
+					// print "</article>";
 					
 				} else {
 					print "<span class='text-danger'>Did not understand your input. </span>";
@@ -213,14 +257,14 @@
 			}
 			$mysqli->close(); 
 		## end search 		 
-		 
+		
 		?>
 			
-			<p>&nbsp; </p>
+		<!--	<p>&nbsp; </p>  -->
 			
 		<div class="col-md-12 offset-0" id="">
 			
-			<div class="float-left " style="position:relative; left:1%; ">
+			<div class="float-left " style="position:relative; left:1%; visibility:hidden;  ">
 				<select class="btn btn-light btn-lg versions" id="v" onchange="$('button.read-book').click()">
 				<?php $versions = $dbm->select('bible_version_key',array('')); 
 				if(!empty($versions))foreach($versions as $k=>$v){ 
@@ -230,7 +274,7 @@
 				</select> 
 			</div>
 			
-			<div class="float-left " style="position:relative; left:5%; ">
+			<div class="float-left " style="position:relative; left:5%;  visibility:hidden; ">
 				<select class="btn btn-light btn-lg books" onchange="reset_verse($(this).val(),$('select.chapters').val())">
 				<?php $books = $dbm->select('key_english',array('')); 
 				if(!empty($books))foreach($books as $k=>$v){ 
@@ -240,7 +284,7 @@
 				</select> 
 			</div>
 			
-			<div class="float-left " style="position:relative; left:10%; ">
+			<div class="float-left " style="position:relative; left:10%;  visibility:hidden;">
 				<select class="btn btn-light btn-lg chapters" onchange="reset_verse($('select.books').val(),$(this).val())">
 				<?php $chapters = $mydbm->runBaseQuery("SELECT DISTINCT MAX(c) as last from t_kjv WHERE b = $book_id ");
 				$len = range(1,$chapters[0]['last']); foreach($len as $ch) {
@@ -250,19 +294,22 @@
 				</select> 
 			</div>
 			
-			
-			<div class="float-left " style="position:relative; left:15%; ">
+			<div class="float-left " style="position:relative; left:15%;  visibility:hidden; ">
 			<span class="btn btn-dark btn-lg pull-right"> <?php echo intval($curVerse) . " of ". intval($lastVerse);; ?>  </span> 
 			</div>
 			
 			
-			<div class="float-left  mb-2 pb-2" style="position:relative; left:20%; ">
-				<button id="pressPrev" class="btn btn-primary btn-lg prev-verse"  onclick="setPrevId($(this).attr('data-text'),$(this).attr('min'))" data-text="<?php echo intval($curVerse);?>" min="1" ><i class="fa fa-chevron-left"></i>&nbsp; Previous </button> 
+			<div class="float-left " style="position:absolute; left: 25%; ">
+				<button id="pressPrev" class="btn btn-white btn-lg prev-verse"  onclick="setPrevId($(this).attr('data-text'),$(this).attr('min'))" data-text="<?php echo intval($curVerse);?>" min="1" ><i class="fa fa-chevron-left"></i></button> 
 			</div>
 			
-			<div class="float-left  mb-2 pb-2" style="position:relative; left:25%; " >
-				<button id="pressNext" class="btn btn-success btn-lg pull-right next-verse" onclick="setNextId($(this).attr('data-text'),$(this).attr('max'))" data-text="<?php echo intval($curVerse);?>" max="<?php echo intval($lastVerse);?>" >Next &nbsp; <i class="fa fa-chevron-right"></i> </button> 
+			<div class="float-left  " style="position:absolute; left: 75%; font-size" >
+				<button id="pressNext" class="btn btn-white btn-lg pull-right next-verse" onclick="setNextId($(this).attr('data-text'),$(this).attr('max'))" data-text="<?php echo intval($curVerse);?>" max="<?php echo intval($lastVerse);?>" > &nbsp; <i class="fa fa-chevron-right"></i> </button> 
 			</div>
+			<!--
+			<div class="float-left  mb-2 pb-2" style="position:relative; left:23%; " >
+				<button id="start" class="btn btn-primary btn-lg pull-right" >&nbsp; <i class="fa fa-play"></i> </button> 
+			</div>-->
 			
 			
 		 </div>
@@ -303,7 +350,7 @@
 					$vss = $verses['v'][$index]; 
 					$txt = $verses['t'][$index]; 
 					$txt = highlight($txt,$refText);
-				 echo "<p><small><b>".$chp.":</b>$vss &nbsp;".$txt." <small><i>(".$bbname.")</i></small> </small></p>";
+				 echo "<p> <b>".$chp.":</b>$vss &nbsp;".$txt." <small><i>(".$bbname.")</i></small> </p>";
 				 
 				 $index++;
 			}
@@ -319,12 +366,13 @@
 	 if(isset($_POST['auto_search_bible_reference'])){ $dbm = new DbTool(); 
 		$word = $dbm->clean($_POST["keyword"]); 
 		if(!empty($word)) { 
-			$info = $dbm->regExpSearch('key_english', array('n'=>$word),array('n'), " ASC ",'10');
-			if(!is_null($info)) $info = $dbm->getFields($info,array('n','b')); 
-			$tot = empty($info)?0:count($info['n']);
+			// $info = $dbm->regExpSearch('key_english', array('n'=>$word),array('n'), " ASC ",'10');
+			$info = $dbm->regExpSearch('key_abbreviations_english', array('a'=>$word,'p'=>1),array('a'), " ASC ",'10');
+			if(!is_null($info)) $info = $dbm->getFields($info,array('a','b')); 
+			$tot = empty($info)?0:count($info['a']);
 			 if(!is_null($info)){
 			   $l=0; $m=0;
-				  foreach($info['n'] as $ref) {
+				  foreach($info['a'] as $ref) {
 				## for($p = 1;$p<=10; $p++) {
 					  $names = str_replace($word, "<b class='text-purple'>".$word."</b>", $ref);
 				 ?>
@@ -340,7 +388,23 @@
 			 }  // end not empty keyword 
 		} ### end post 
 	  
-	 
+	 ## getMoreNotes:'',lastId:lastId
+	  if(isset($_POST['getMoreNotes'])){ 
+		$lastId = $dbm->clean($_POST["lastId"]); $lastIndex =$dbm->clean($_POST["lastIndex"]); $table = "messages";
+		$notes = $mydbm->runBaseQuery("SELECT * FROM $table WHERE sn <  $lastId LIMIT 10");
+		if(!empty($notes)){
+			foreach($notes as $k=>$v){ ?>
+				<tr class="post-item" id="<?php echo $notes[$k]['sn']; ?>"> 
+					<th> <?php echo ++$lastIndex; ?>  <?php # echo $notes[$k]['sn']; ?> </th>
+					<td> <?php echo date('l, F d, Y',strtotime($notes[$k]['date_c'])); ?></td>
+					<td> <?php echo $notes[$k]['topic']; ?> </td>
+					<td> <?php $bb = explode("**",$notes[$k]['bible_ref']); echo implode("<br/>",$bb); ?> </td>
+					<td> <?php echo htmlspecialchars_decode($notes[$k]['messages']); ?> </td>
+					<td> <?php echo $notes[$k]['preacher']; ?> </td>
+				</tr>
+			<?php } ## end foreach
+		} ## end not empty
+	  }
 	
 	function addZeros($input,$max) {
 			$len = strlen($input); 

@@ -9,12 +9,26 @@
 				line-height: 1.6em;
 			 }
 		  
-		  #verse_foot{
+		  #verse_foot {
 			  bottom:0em; background-color:#000; height:50px; width:100%;  position:block; 
 		  }
-		 .verse {font-size:28px; }
+		 
 		 .bold, p.bold {font-weight:bold; }
-		 .versetext { font-size:2em; text-decoration: text-center; font-family:tahoma; }
+		 .versetext {  font-weight:bold; text-align: center; font-family:tahoma; }
+		 .tosize-50 {font-size:50px; }
+		 .tosize-55 {font-size:55px; }
+		 .tosize-60 {font-size:60px; }
+		 .tosize-65 {font-size:65px; }
+		 .tosize-70 {font-size:70px; }
+		 .tosize-75 {font-size:75px; }
+		 .tosize-80 {font-size:80px; }
+		 .tosize-85 {font-size:85px; }
+		 .tosize-90 {font-size:90px; }
+		 .tosize-95 {font-size:95px; }
+		 .tosize-100 {font-size:100px; }
+		 .tosize-105 {font-size:105px; }
+		 .tosize-110 {font-size:110px; }
+		 /*.versetext { font-size:6vw; font-weight:bold; text-align: center; font-family:tahoma; }*/
 		  /*** styling the ul > li for bible references ***/
 			.book_ref ul > li ,
 			.chp_ref ul > li,

@@ -1,10 +1,22 @@
-$(function(){
-			 // send request to fetch all bible 
-			 load_books($('.book_ref'));
+	
+	$(function(){
 			 
-			 $('div.verse_ref p').on('click',function(){
+			 alertify.set('notifier','position', 'bottom-center');
+			 alertify.set('notifier','delay', 6);
+			 
+			  $('textarea.note_messages').summernote({
+				height: 200,
+				tabsize: 1
+			  });  
+			 // send request to fetch all bible 
+			 resize(); 
+			 
+			 // load_books($('.book_ref'));
+			 
+			 /** $('div.verse_ref p').on('click',function(){
 				 $(this).css('font-weight','bold');
 			 });
+			 **/
 			  
 			  $('input.text-search').on('keyup',function(){
 				search_text = $(this).val();  elem = $('.search_result'); 
@@ -28,7 +40,7 @@ $(function(){
 				  {
 					e.preventDefault(); elem = 'div.verse_ref'; texts = $(this).val(); 
 					v = $('select#v').val(); 
-					if(texts == ""){ alert('No Scripture To Read'); }
+					if(texts == ""){ alertify.error('No Scripture T o Read'); }
 					else {readBookbySearch(texts,elem,v); }					
 				  }
 				}); 
@@ -37,14 +49,15 @@ $(function(){
 				$('button.read-book').on('click',function(e){
 					e.preventDefault(); elem = 'div.verse_ref'; texts = $('input.text-search').val();
 					v = $('select#v').val();
-					if(texts == ""){ alert('No Scripture To Read ' ); }
+					if(texts == ""){ alertify.error('No Scripture To Read ' ); }
 					else {readBookbySearch(texts,elem,v); }	
 				});
 				/***************************/
+				
 				$('button.search-book').on('click',function(e){
 					e.preventDefault(); 
 					elem = 'div.verse_ref'; texts = $('input.text-search').val();
-					if(texts == ""){ alert('No Text To Search' ); }
+					if(texts == ""){ alertify.error('No Text To Search');  }
 					else {	searchBibleWords(texts,elem);  }					
 				});
 				/***************************/	 
@@ -61,31 +74,31 @@ $(function(){
 				     
 				// manage font-size of bible verses 
 				 var handle = $( "#custom-handle" );
-				$('div.font_slide').slider({min:16, value:24, max:36,  orientation: "horizontal",					
+				$('div.font_slide').slider({min:16, value:24, max:72,  orientation: "horizontal",					
 					create: function() { handle.text( $( this ).slider( "value" ) );  },
 					slide: function( event, ui ) { handle.text( ui.value );  $('div.verse_ref').css("font-size",ui.value+"px");  }
 					});  // end slider 
 			    $('div.verse_ref').css("font-size",$('div.font_slide').slider("option","value")+"px"); 
  
 				/***** DETECT NEXT & PREVIOUS KEY STROKE *****************/
-				/********
-				$("body div.card div.row").on("mouseover",function () {
-				  $(document).bind("keydown",function(e){
+				$('body div.verse_ref').on('mouseover',function(){
+					$(document).bind("keydown",function(e){
 					  var key = e.keyCode || e.which; 
 					  console.log("key code : "+key);  
 					  // 37 = left arrow  , 38 = up arrow,  39 = right arrow,   40 = down arrow
-					  if(key == 37 || key == 38){
+					  if(key == 80 ){
 						  $("button#pressPrev").click(); 
 					  }
-					  if(key == 39 || key == 40){
+					  if(key == 78){
 						  $("button#pressNext").click(); 
 					  }
 				  });
 				}).on("mouseout",function(){
 					$(document).unbind("keydown");
 				});
-				**************/
 				
+				
+				 
 		}); // end jQuery 
 		
 		
@@ -109,7 +122,7 @@ $(function(){
 			if(passage!=""){ $.ajax({
 					url: "ajax.php", type: "POST",	data: { save_bible_passage:"this", passage:passage  },								
 					cache: false, beforeSend : function (){  console.log('saving '+passage); }, 
-					success: function(response) { alert(response);	}	 
+					success: function(response) { alertify.success(response); 	}	 
 				});  
 				}
 			}
@@ -120,9 +133,33 @@ $(function(){
 			 $.ajax({
 					url: "ajax.php", type: "POST",	data: { get_bible_passage:"all" },								
 					cache: false, beforeSend : function (){  },       
-					success: function(response) { $(elem).html(response);	}	 
+					success: function(response) { 
+						$(elem).html(response); 
+						reload_saved_notes(); 
+					}	 
 				});  				
 			}
+		function reload_saved_notes(){
+			 $.ajax({
+					url: "ajax.php", type: "POST",	data: { reload_saved_notes:"all" },								
+					cache: false, beforeSend : function (){  },       
+					success: function(res) { 
+						 // alert(res);
+						 response = $.parseJSON(res);   // alert(response['bible_ref']);
+						 $('span.preacher').html(response['preacher']); $('input.preacher').val(response['preacher']); 
+						 $('span.date').html(response['date_c']); $('input.date').val(response['date_c']); 
+						 $('span.topic').html(response['topic']); $('input.topic').val(response['topic']); 
+						 $('span.note-title').html(response['note_title']); $('input.note-title').val(response['note_title']); 
+						 $('textarea.note_messages').val(response['messages']);
+						 //  [{"note_title":"Sunday School","messages":"","bible_ref":"Acts 19:1-6**John 3:16**Rom 5","finalized":"no","status":"active"}]
+					}	 
+				});  	
+			}
+			
+		function open_notes(){
+			url = "notes.php"; 
+                        window.open(url);
+		}
 		
 		/********************************/
 		function load_chp(book_id,elem){
@@ -184,8 +221,10 @@ $(function(){
 			$.ajax({
 					url: "ajax.php", type: "POST",	data: { read_text_verse:"all", book:texts ,v:v },								
 					cache: false, beforeSend : function (){  console.log(texts); }, 
-					success: function(response) { $(elem).html(response);	}	 
-				});  
+					success: function(response) { $(elem).html(response); 
+					console.log(response);// $("div.versetext").html()
+					}	 
+				});   // tts();
 			}
 		/********************************/
 		function searchBibleWords(texts,elem,v = "t_kjv"){ 
@@ -242,7 +281,7 @@ $(function(){
 			   $.ajax({
 					url: "ajax.php", type: "POST",	data: { save_message_as_draft:"all", variables:variables },								
 					cache: false, beforeSend : function (){  },       
-					success: function(response) { alert(response); get_bible_passage('.bible_ref');	}	 
+					success: function(response) { alertify.success(response); get_bible_passage('.bible_ref');	}	 
 				});  
 		}
 		
@@ -254,7 +293,7 @@ $(function(){
 			  $.ajax({
 					url: "ajax.php", type: "POST",	data: { save_message_as_final:"all", variables:variables },								
 					cache: false, beforeSend : function (){  },       
-					success: function(response) { alert(response); reset_message_params(); get_bible_passage('.bible_ref');
+					success: function(response) { alertify.success(response); reset_message_params(); get_bible_passage('.bible_ref');
 					
 					}	 
 				});  
@@ -276,8 +315,9 @@ $(function(){
 			
 			if( curId < maxId ) {
 				return curId+=1; 
-			}
-			else return maxId; 
+			} 
+			
+			else return maxId;  
 			
 		}
 		
@@ -288,6 +328,7 @@ $(function(){
 			if( minId < curId ) {
 				return curId-=1;  
 			}
+			
 			return minId; 
 		}
 		
@@ -296,7 +337,7 @@ $(function(){
 			elem = $('input.text-search');  btn = $('button.read-book');
 			script = elem.val().split(":") ; 
 			newVerse = script[0]+":"+newId;
-			elem.val(newVerse);  btn.click(); 
+			elem.val(newVerse);  btn.click();  
 		}
 		
 		function setNextId(curId,maxId){
@@ -305,7 +346,7 @@ $(function(){
 			script = elem.val().split(":") ; 
 			newVerse = script[0]+":"+newId;
 			elem.val(newVerse);  btn.click(); 
-			// console.log(' new id : '+newId+' prev id: '+curVerse);
+			// console.log(' new id : '+newId+' prev id: '+curVerse);  
 		}
 		
 		 function set_bible_found(name,id) {
@@ -319,4 +360,22 @@ $(function(){
 			$('input.text-search').val(book+" "+chapter);
 			btn.click(); 
 		}
+		
+		function tts(){			
+			$("#cancel").click();  
+			if($("input#tts").prop('checked')){ 
+			setTimeout(function(){ $("#start").click();},300);
+			}
+			
+		}
 	///////////////////////
+	function resize(){
+		 
+	  }
+	  
+
+		
+
+		// input.addEventListener('input', processInput);
+	  
+	  

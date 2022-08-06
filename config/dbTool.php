@@ -809,7 +809,7 @@
 					  $wheres = empty($criterials)?"":array_map(function($elem){ return "$elem REGEXP ?";},array_keys($criterials));					
 					  if(!empty($order)) $ord = " ORDER BY ".join(" , ",$order)." ". $direction ;
 						else $ord = "";						
-					  $str = sprintf("SELECT * FROM %s %s %s %s",$table,empty($criterials)?"":"WHERE",join(' OR ',$wheres),$ord);
+					  $str = sprintf("SELECT * FROM %s %s %s %s",$table,empty($criterials)?"":"WHERE",join(' AND ',$wheres),$ord);
 					  $stm = $conn->prepare($str);			
 					  $stm->execute(array_values($criterials));				
 					  return  $res = $stm->fetchAll();			  
@@ -960,7 +960,7 @@
 			 switch($type){
 				 case "email": return filter_var($text,FILTER_SANITIZE_EMAIL);  break; 
 				 case "html": return htmlspecialchars($text);  break; 
-				 default : return filter_var($text,FILTER_SANITIZE_STRING); break; 
+				 default : return filter_var($text,FILTER_SANITIZE_FULL_SPECIAL_CHARS); break; 
 			 }
 		} 
 		 

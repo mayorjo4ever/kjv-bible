@@ -1,26 +1,19 @@
-<nav class="navbar navbar-expand-md navbar-dark  fixed-top bg-info"> <!--   -->
-    <a href="#" class="navbar-brand "><img src="imgs/open-bible.png"  class="img" style="height:90px" /> &nbsp;  <span class="h4 bold  mt-2 pt-2">Holy Bible </span> </a>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark  fixed-top"> <!--   -->
+     
     <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarCollapse"> <!--  -->
          
-		 <div class="navbar-nav">           
-			<a href="../hymn-book/" title="View Only Believe Hymns " class="nav-item nav-link active ml-3 pl-3 btn btn-info"> Hymns &nbsp; <i class="fa fa-list"></i> </a>
-		    <a href="#" title="Create Notes for the sermon" class="nav-item nav-link active ml-3 pl-3 btn btn-info" onclick="get_bible_passage('.bible_ref')" data-toggle="modal" data-target="#_notes"> Notes   &nbsp;<i class="fa fa-edit"></i></a>
-	   </div>  
 		<form class="form-inline ml-auto">
-			 		
-				<button title="Save The Bible Reference To Message Note" type="button" onclick="save_bible_passage()" class="btn btn-icons btn-dark "><i class="fa fa-save"></i></button>&nbsp;
-				<input type="text" value="Rev 3:14-21" class="form-control text-search mr-sm-2" style="font-size:24px;" placeholder="Read / Search Bible ">
-				   
-				<button type="submit" class="btn btn-warning read-book btn-lg "> Read &nbsp;<i class="fa fa-book"></i></button> &nbsp; 
-				<button type="submit" class="btn btn-dark search-book btn-lg "> Search &nbsp;<i class="fa fa-search"></i></button>
+				<button type="submit" class="btn btn-primary read-book btn-lg " style="height:100px; font-size:40px;"> <strong>KJV </strong></button> &nbsp; 
+				<input type="text" value="gen 1:1" style="width:350px; height:100px; font-size:48px;" class="form-control form-control-lg text-uppercase text-search bold  mr-sm-2" style="font-size:48px;" placeholder="GEN 1:1 ">
+				<button type="submit" class="btn btn-dark search-book btn-lg ">  </button>
 			  
         </form>
 		
-        <div class="navbar-nav ml-auto">
+        <div class="navbar-nav ml-auto" style="visibility:hidden">
             <a href="#" class="nav-item nav-link"> <i class="fa fa-cog fa-2x text-white"  data-toggle="modal" data-target="#_settings"></i></a>
         </div>
     </div>
